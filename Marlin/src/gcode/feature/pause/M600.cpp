@@ -154,7 +154,6 @@ void GcodeSuite::M600() {
     #endif
   );
 
-
   // STELLAMOVE
   if (pause_print(retract, park_point, true, unload_length DXC_PASS)) {
     if (standardM600) {
@@ -173,7 +172,7 @@ void GcodeSuite::M600() {
       #else
         wait_for_confirmation(true, beep_count DXC_PASS);
       #endif
-      // wait_for_confirmation(true, beep_count DXC_PASS);      
+      //wait_for_confirmation(true, beep_count DXC_PASS);
       resume_print(
         FILAMENT_CHANGE_SLOW_LOAD_LENGTH,
         ABS(parser.axisunitsval('L', E_AXIS, fc_settings[active_extruder].load_length)),

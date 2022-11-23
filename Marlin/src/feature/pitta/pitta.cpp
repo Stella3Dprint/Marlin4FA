@@ -271,7 +271,8 @@ void mExtruder_force_dir(bool dir) {
 
 
 
-
+int e_stemp_per_mm = 139;
+float val_e_step_scale = 1.2;
 long int mot_ext_remain_step = 0, init_mot_ext_remain_step = 0, feed_fast_cnt = 0;
 int ext_load_damp = EXT_SLOW_LOAD;
 unsigned int i_ABS_MOT_TRIGGER_CNT_DUTY = ABS_MOT_TRIGGER_CNT_DUTY;
@@ -365,6 +366,8 @@ void ext_flat(bool dir, int spd, long int last_cnt) {
   mExtruder_dir(dir);
   pitta_wtcdog_reset();
   last_cnt = (last_cnt >> 2)*MUL_V;
+  last_cnt = (float)last_cnt*val_e_step_scale;
+  spd = (float)spd/val_e_step_scale;
 
   while (last_cnt > 0) {
     last_cnt--;
@@ -1673,7 +1676,7 @@ void ext_snap()
 }
 
 void PITTA::load_material_from_retract_ready() { 
-  long extrude_slow_cnt = 18000*MUL_V, wait_expire_cnt = 0;
+  long extrude_slow_cnt = 18000*val_e_step_scale*MUL_V*1.25, wait_expire_cnt = 0;
   bool b_step = false;
   bool b_material_empty = true;
   int termal_expire_cnt = 0, delay_cnt = 0, chk_cnt = 0;
@@ -1904,6 +1907,8 @@ void PITTA::initial_retract_ready()
   // SERIAL_ECHOLNPGM("PITTA ready done ");  
 }
 
+
+
 void PITTA::retract_ready()
 {
   bool b_step = false;
@@ -1914,6 +1919,17 @@ void PITTA::retract_ready()
   static int sub_m_s_hyst_cnt = 0;
   celsius_t temp;
   celsius_t cool_temp = 0;
+  int delay_scale = 0;
+
+  e_stemp_per_mm = (int)planner.settings.axis_steps_per_mm[E_AXIS];
+  if (e_stemp_per_mm == 95) {
+    val_e_step_scale = 1.0;
+    delay_scale = 90;
+  }
+  else {
+    val_e_step_scale = 1.2;
+    delay_scale = 60;
+  }  
 
   // temp = parser.value_celsius();
   cool_temp = temp = pitta_get_temp(0);
@@ -1955,7 +1971,6 @@ void PITTA::retract_ready()
 
   if (quick_chk_material()||b_stop_active) {
     wait_expire_cnt = 0;
-
     ext_flat(INV_DIR, 3000, 300);
     ext_flat(NOM_DIR, 8000, 150);
 
@@ -1965,10 +1980,10 @@ void PITTA::retract_ready()
     ext_flat(INV_DIR, 80, 4);
     ext_flat(INV_DIR, 60, 6);
     ext_flat(INV_DIR, 50, 8);
-    ext_flat(INV_DIR, 40, 10);
-    ext_flat(INV_DIR, 35, 12);
-    ext_flat(INV_DIR, 30, 14);//30
-    ext_flat(INV_DIR, 27, 5000); 
+    ext_flat(INV_DIR, 45, 10);
+    ext_flat(INV_DIR, 40, 12);
+    ext_flat(INV_DIR, 35, 14);//30
+    ext_flat(INV_DIR, 32, 5000); 
     snap_turn(120,3000,20,0);    
     ext_flat(NOM_DIR, 500, 4900); 
     ext_flat(NOM_DIR, 30000, 300); 
@@ -1981,12 +1996,10 @@ void PITTA::retract_ready()
     ext_flat(INV_DIR, 80, 4);
     ext_flat(INV_DIR, 60, 6);
     ext_flat(INV_DIR, 50, 8);
-    ext_flat(INV_DIR, 40, 10);
-    ext_flat(INV_DIR, 35, 12);
-    ext_flat(INV_DIR, 30, 14);//30
-    ext_flat(INV_DIR, 27, 7000); 
- 
-    // ext_flat(INV_DIR, 30000, 300);    
+    ext_flat(INV_DIR, 45, 10);
+    ext_flat(INV_DIR, 40, 12);
+    ext_flat(INV_DIR, 35, 14);//30
+    ext_flat(INV_DIR, 32, 7000); 
 
     // ext_flat(INV_DIR, 3000, 300);
     // ext_flat(NOM_DIR, 8000, 150);
@@ -1998,11 +2011,26 @@ void PITTA::retract_ready()
     // ext_flat(INV_DIR, 60, 6);
     // ext_flat(INV_DIR, 50, 8);
     // ext_flat(INV_DIR, 40, 10);
-    // ext_flat(INV_DIR, 30, 12);
-    // ext_flat(INV_DIR, 27, 14);//30
-    // ext_flat(INV_DIR, 25, 7000);  
+    // ext_flat(INV_DIR, 35, 12);
+    // ext_flat(INV_DIR, 30, 14);//30
+    // ext_flat(INV_DIR, 27, 5000); 
+    // snap_turn(120,3000,20,0);    
+    // ext_flat(NOM_DIR, 500, 4900); 
+    // ext_flat(NOM_DIR, 30000, 300); 
+    // ext_flat(INV_DIR, 3000, 300);
+    // ext_flat(NOM_DIR, 8000, 150);
+
+    // ext_flat(INV_DIR, 250, 20);
+    // ext_flat(INV_DIR, 190, 4);
+    // ext_flat(INV_DIR, 130, 4);
+    // ext_flat(INV_DIR, 80, 4);
+    // ext_flat(INV_DIR, 60, 6);
+    // ext_flat(INV_DIR, 50, 8);
+    // ext_flat(INV_DIR, 40, 10);
+    // ext_flat(INV_DIR, 35, 12);
+    // ext_flat(INV_DIR, 30, 14);//30
+    // ext_flat(INV_DIR, 27, 7000); 
  
-    // ext_flat(INV_DIR, 30000, 300);
 
     int cool_cnt = 0;
     int slow_chg_cnt = 0;
@@ -2031,7 +2059,6 @@ void PITTA::retract_ready()
         E0_STEP_WRITE(LOW);
       }          
     }
-
     ext_flat(NOM_DIR, 15000, 300);
     ext_flat(INV_DIR, 300, 50);
     ext_flat(INV_DIR, 250, 30);
@@ -2041,9 +2068,22 @@ void PITTA::retract_ready()
     ext_flat(INV_DIR, 70, 6);
     ext_flat(INV_DIR, 55, 8);
     ext_flat(INV_DIR, 45, 10);
-    ext_flat(INV_DIR, 35, 12);
-    ext_flat(INV_DIR, 27, 14);//30
-    ext_flat(INV_DIR, 25, 5000);  
+    ext_flat(INV_DIR, 40, 12);
+    ext_flat(INV_DIR, 35, 14);//30
+    ext_flat(INV_DIR, 32, 5000);  
+
+    // ext_flat(NOM_DIR, 15000, 300);
+    // ext_flat(INV_DIR, 300, 50);
+    // ext_flat(INV_DIR, 250, 30);
+    // ext_flat(INV_DIR, 200, 4);
+    // ext_flat(INV_DIR, 150, 4);
+    // ext_flat(INV_DIR, 90, 4);
+    // ext_flat(INV_DIR, 70, 6);
+    // ext_flat(INV_DIR, 55, 8);
+    // ext_flat(INV_DIR, 45, 10);
+    // ext_flat(INV_DIR, 35, 12);
+    // ext_flat(INV_DIR, 27, 14);//30
+    // ext_flat(INV_DIR, 25, 5000);  
 
 
     b_is_mid_printing = true;
@@ -2054,7 +2094,9 @@ void PITTA::retract_ready()
 
   b_material_empty = false;
   thermalManager.setTargetHotend(temp, active_extruder);
-  while ((!b_material_empty||b_is_mid_printing) && wait_expire_cnt < 160000) {//40000//1800000
+
+
+  while ((!b_material_empty||b_is_mid_printing) && wait_expire_cnt < 160000*val_e_step_scale) {//40000//1800000
     // if (wait_expire_cnt == 10000) {
     //   thermalManager.setTargetHotend(temp, active_extruder);
     // }
@@ -2097,7 +2139,7 @@ void PITTA::retract_ready()
     }
    
     else {
-      delayMicroseconds(90/WAIT_MUL_V);
+      delayMicroseconds(delay_scale/WAIT_MUL_V);
     }
     
     // delay(3);
@@ -2231,6 +2273,7 @@ void PITTA::init()
 #endif   
 }
 
+
 void PITTA::pitta_stop()
 {
   b_stop_active = true;
@@ -2320,14 +2363,15 @@ void PITTA::pitta_mon()
   // if (printingIsActive()) 
   {
     mon_wait_cnt++;
-    if (mon_wait_cnt>300) {
+    if (mon_wait_cnt>4000) {
       mon_wait_cnt = 0;
       cur_time = millis();
-      if (cur_time>prev_time + 100) {
+      if (cur_time>prev_time + 500) {
         prev_time = cur_time;
 
         // SEC_MATERIAL_S_PIN;
         // SET_INPUT_PULLUP(ONE_W_CMD_PIN);
+        // SERIAL_ECHOLNPGM("ext step", (int)planner.settings.axis_steps_per_mm[E_AXIS]);
         bool b_is_material = READ(SEC_MATERIAL_S_PIN);
         
         if (b_is_material) {
@@ -3297,7 +3341,6 @@ void PITTA::parsing() {
           tb_len = 105;
         }
         tb_len = 30;
-
         b_change_done = true;
         return;
 #endif

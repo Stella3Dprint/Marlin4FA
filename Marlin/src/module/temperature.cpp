@@ -1521,6 +1521,11 @@ void Temperature::min_temp_error(const heater_id_t heater_id) {
 
 #if HAS_HOTEND
 
+  // STELLAMOVE
+  #if ENABLED(STM_FA400)      
+  extern bool g_pitta_prevent_heater_fail;
+  #endif  
+
   void Temperature::manage_hotends(const millis_t &ms) {
     HOTEND_LOOP() {
       #if ENABLED(THERMAL_PROTECTION_HOTENDS)
@@ -1536,6 +1541,7 @@ void Temperature::min_temp_error(const heater_id_t heater_id) {
 
       temp_hotend[e].soft_pwm_amount = (temp_hotend[e].celsius > temp_range[e].mintemp || is_preheating(e)) && temp_hotend[e].celsius < temp_range[e].maxtemp ? (int)get_pid_output_hotend(e) >> 1 : 0;
 
+      // STELLAMOVE
       #if WATCH_HOTENDS
         // Make sure temperature is increasing
         if (watch_hotend[e].elapsed(ms)) {          // Enabled and time to check?
@@ -1543,7 +1549,10 @@ void Temperature::min_temp_error(const heater_id_t heater_id) {
             start_watching_hotend(e);               // If temp reached, turn off elapsed check
           else {
             TERN_(HAS_DWIN_E3V2_BASIC, DWIN_Popup_Temperature(0));
-            _temp_error((heater_id_t)e, FPSTR(str_t_heating_failed), GET_TEXT_F(MSG_HEATING_FAILED_LCD));
+            if (!g_pitta_prevent_heater_fail) {
+              _temp_error((heater_id_t)e, FPSTR(str_t_heating_failed), GET_TEXT_F(MSG_HEATING_FAILED_LCD));
+            }
+            // _temp_error((heater_id_t)e, FPSTR(str_t_heating_failed), GET_TEXT_F(MSG_HEATING_FAILED_LCD));
           }
         }
       #endif
@@ -1561,6 +1570,7 @@ void Temperature::min_temp_error(const heater_id_t heater_id) {
       if (degBed() > BED_MAXTEMP) max_temp_error(H_BED);
     #endif
 
+    // STELLAMOVE
     #if WATCH_BED
       // Make sure temperature is increasing
       if (watch_bed.elapsed(ms)) {              // Time to check the bed?
@@ -1568,7 +1578,9 @@ void Temperature::min_temp_error(const heater_id_t heater_id) {
           start_watching_bed();                 // If temp reached, turn off elapsed check
         else {
           TERN_(HAS_DWIN_E3V2_BASIC, DWIN_Popup_Temperature(0));
-          _temp_error(H_BED, FPSTR(str_t_heating_failed), GET_TEXT_F(MSG_HEATING_FAILED_LCD));
+          if (!g_pitta_prevent_heater_fail) {
+            _temp_error(H_BED, FPSTR(str_t_heating_failed), GET_TEXT_F(MSG_HEATING_FAILED_LCD));
+          }         
         }
       }
     #endif // WATCH_BED
