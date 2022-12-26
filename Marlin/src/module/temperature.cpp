@@ -1865,7 +1865,7 @@ void Temperature::task() {
         gcode.process_subcommands_now(F("M524"));
         // STELLAMOVE
         #if ENABLED(STM_FA400)
-        gcode.process_subcommands_now(F("M26 S0"));
+        //gcode.process_subcommands_now(F("M26 S0"));
         #endif
       }
     #endif

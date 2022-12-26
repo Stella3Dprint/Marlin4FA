@@ -49,10 +49,20 @@
 // E1 -> Z3
 // E2 -> Z4
 // E3 -> Z2
-#define X2_STEP_PIN                         PE1  // PD12
-#define X2_DIR_PIN                          PE0  // PC4
-#define X2_ENABLE_PIN                       PC5  // PE8
-#define X2_CS_PIN                           PD11 // PA15
+
+#ifdef STM_3TO8_STEPPER_CHG
+  #define X2_STEP_PIN                         PD14  // PD12 // stellamove change drive ic port 3->8
+  #define X2_DIR_PIN                          PD13  // PC4
+  #define X2_ENABLE_PIN                       PD15  // PE8
+  #define X2_CS_PIN                           PD10 // PA15
+#else
+  #define X2_STEP_PIN                         PE1  // PD12 // stellamove change drive ic port 3->8
+  #define X2_DIR_PIN                          PE0  // PC4
+  #define X2_ENABLE_PIN                       PC5  // PE8
+  #define X2_CS_PIN                           PD11 // PA15
+#endif
+
+
 
 #define Z2_STEP_PIN                         PD12 // PE1   // E4_STEP
 #define Z2_DIR_PIN                          PC4  // PE0   // E4_DIR
@@ -84,14 +94,20 @@
   #define X_SERIAL_TX_PIN                   PE7
   #define X_SERIAL_RX_PIN        X_SERIAL_TX_PIN
 
-  #define X2_SERIAL_TX_PIN                  PD11 // PA15
+#ifdef STM_3TO8_STEPPER_CHG
+  #define X2_SERIAL_TX_PIN                  PD10 // PA15 // stellamove change drive ic port 3->8
   #define X2_SERIAL_RX_PIN      X2_SERIAL_TX_PIN
+  #define Z_SERIAL_TX_PIN                   PD11 // stellamove change drive ic port 3->8
+  #define Z_SERIAL_RX_PIN        Z_SERIAL_TX_PIN
+#else 
+  #define X2_SERIAL_TX_PIN                  PD11 // PA15 // stellamove change drive ic port 3->8
+  #define X2_SERIAL_RX_PIN      X2_SERIAL_TX_PIN
+  #define Z_SERIAL_TX_PIN                   PD10 // stellamove change drive ic port 3->8
+  #define Z_SERIAL_RX_PIN        Z_SERIAL_TX_PIN  
+#endif
 
   #define Y_SERIAL_TX_PIN                   PE15
   #define Y_SERIAL_RX_PIN        Y_SERIAL_TX_PIN
-
-  #define Z_SERIAL_TX_PIN                   PD10
-  #define Z_SERIAL_RX_PIN        Z_SERIAL_TX_PIN
 
   #define Z2_SERIAL_TX_PIN                  PA15 // PD11
   #define Z2_SERIAL_RX_PIN      Z2_SERIAL_TX_PIN

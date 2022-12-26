@@ -99,7 +99,10 @@
 //#define STM_FA400_PITTA_SINGLE_ONLY // USE PITTA FUNCTION BUT FOR ONLY SINGLE NOZZLE MODEL
 //#define STM_FA400_PITTA_DD_MODE     // PITTA DIRECT DRIVE MODE
 #define STM_FA400_SINGLE_DD_MODE
+//#define STM_3TO8_STEPPER_CHG  // EMC
 //#define STM_FA400_S42B   // S42B
+//#define STM_FA400_OLDSET
+//#define STM_FA400_JEJU
 
 /**
  * Select the serial port on the board to use for communication with the host.
@@ -664,7 +667,7 @@
 #define HEATER_5_MAXTEMP 275
 #define HEATER_6_MAXTEMP 275
 #define HEATER_7_MAXTEMP 275
-#define BED_MAXTEMP      125
+#define BED_MAXTEMP      95
 #define CHAMBER_MAXTEMP  60
 
 /**
@@ -1231,7 +1234,11 @@
 #if ENABLED(STM_FA400_S42B)
   #define DEFAULT_AXIS_STEPS_PER_UNIT   { 102.4, 102.4, 400, 95 }  // S42B = 4096 / 40
 #else
-  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 160, 160, 321, 139 }  // { 80, 80, 400, 500 }  // TMC2209, Dual Gear Extruder : 139
+  #if ANY(STM_FA400_OLDSET, STM_FA400_JEJU)
+    #define DEFAULT_AXIS_STEPS_PER_UNIT   { 160, 160, 321, 95 }  // { 80, 80, 400, 500 }  // Single Gear Extruder : 95
+  #else
+    #define DEFAULT_AXIS_STEPS_PER_UNIT   { 160, 160, 321, 139 }  // { 80, 80, 400, 500 }  // TMC2209, Dual Gear Extruder : 139
+  #endif
 #endif
 
 /**
@@ -1568,12 +1575,16 @@
  *     O-- FRONT --+
  */
 // STELLAMOVE
-#define NOZZLE_TO_PROBE_OFFSET { -25, 50, 0.0 }
+#if ENABLED(STM_FA400_OLDSET)
+  #define NOZZLE_TO_PROBE_OFFSET { -25, 50, 0.0 }
+#else
+  #define NOZZLE_TO_PROBE_OFFSET { -40, 0.0, 0.0 }
+#endif
 
 // STELLAMOVE
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
-#define PROBING_MARGIN 100 //10
+#define PROBING_MARGIN 70 //100 //10
 
 // X and Y axis travel speed (mm/min) between probes
 // STELLAMOVE
@@ -1732,7 +1743,11 @@
 // STELLAMOVE
 #define INVERT_X_DIR false
 #define INVERT_Y_DIR false
-#define INVERT_Z_DIR true
+#if ENABLED(STM_FA400_OLDSET)
+  #define INVERT_Z_DIR false  // old set : false
+#else
+  #define INVERT_Z_DIR true   // old set : false
+#endif
 //#define INVERT_I_DIR false
 //#define INVERT_J_DIR false
 //#define INVERT_K_DIR false
@@ -1796,7 +1811,11 @@
 #define Z_MIN_POS 0
 #define X_MAX_POS X_BED_SIZE
 #define Y_MAX_POS Y_BED_SIZE
-#define Z_MAX_POS 420
+#if ENABLED(STM_FA400_OLDSET)
+  #define Z_MAX_POS 400
+#else
+  #define Z_MAX_POS 420
+#endif
 //#define I_MIN_POS 0
 //#define I_MAX_POS 50
 //#define J_MIN_POS 0
@@ -1865,12 +1884,20 @@
  * For other boards you may need to define FIL_RUNOUT_PIN, FIL_RUNOUT2_PIN, etc.
  */
 // STELLAMOVE
-#define FILAMENT_RUNOUT_SENSOR
+#if ENABLED(STM_FA400)
+  #define FILAMENT_RUNOUT_SENSOR
+#else
+  //#define FILAMENT_RUNOUT_SENSOR
+#endif
 #if ENABLED(FILAMENT_RUNOUT_SENSOR)
   #define FIL_RUNOUT_ENABLED_DEFAULT true // Enable the sensor on startup. Override with M412 followed by M500.
   #define NUM_RUNOUT_SENSORS   1          // Number of sensors, up to one per extruder. Define a FIL_RUNOUT#_PIN for each.
 
-  #define FIL_RUNOUT_STATE     LOW      // Pin state indicating that filament is NOT present.
+  #if ENABLED(STM_FA400_OLDSET)
+    #define FIL_RUNOUT_STATE     HIGH     // Pin state indicating that filament is NOT present.
+  #else
+    #define FIL_RUNOUT_STATE     LOW      // Pin state indicating that filament is NOT present.
+  #endif
   #define FIL_RUNOUT_PULLUP               // Use internal pullup for filament runout pins.
   //#define FIL_RUNOUT_PULLDOWN           // Use internal pulldown for filament runout pins.
   //#define WATCH_ALL_RUNOUT_SENSORS      // Execute runout script on any triggering sensor, not only for the active extruder.
@@ -2341,7 +2368,11 @@
  *    P2  Raise the nozzle by Z-park amount, limited to Z_MAX_POS.
  */
 // STELLAMOVE
-#define NOZZLE_PARK_FEATURE
+#if ENABLED(STM_FA400)
+  #define NOZZLE_PARK_FEATURE
+#else
+  //#define NOZZLE_PARK_FEATURE
+#endif
 
 #if ENABLED(NOZZLE_PARK_FEATURE)
   // Specify a park position as { X, Y, Z_raise }

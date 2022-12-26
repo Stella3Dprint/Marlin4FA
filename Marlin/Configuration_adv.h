@@ -979,7 +979,7 @@
    * Override with 'M422 S<index> X<pos> Y<pos>'.
    */
   // STELLAMOVE
-  #define Z_STEPPER_ALIGN_XY { {  100, 100 }, { 100,  300 }, { 300, 300 }, { 300, 100 } }
+  #define Z_STEPPER_ALIGN_XY { {  70, 70 }, { 70,  330 }, { 330, 330 }, { 330, 70 } }
 
   /**
    * Orientation for the automatically-calculated probe positions.
@@ -1528,7 +1528,6 @@
 
   //#define MEDIA_MENU_AT_TOP               // Force the media menu to be listed on the top of the main menu
 
-  // TEST BLOCK for ABORT Homming
   // STELLAMOVE
   #define EVENT_GCODE_SD_ABORT "G28XY"      // G-code to run on SD Abort Print (e.g., "G28XY" or "G27")
 
@@ -2650,7 +2649,11 @@
  * Enable PARK_HEAD_ON_PAUSE to add the G-code M125 Pause and Park.
  */
 // STELLAMOVE
-#define ADVANCED_PAUSE_FEATURE
+#if ENABLED(STM_FA400)
+  #define ADVANCED_PAUSE_FEATURE
+#else
+  //#define ADVANCED_PAUSE_FEATURE
+#endif
 #if ENABLED(ADVANCED_PAUSE_FEATURE)
   #define PAUSE_PARK_RETRACT_FEEDRATE         60  // (mm/s) Initial retract feedrate.
   #define PAUSE_PARK_RETRACT_LENGTH            2  // (mm) Initial retract.
@@ -2869,7 +2872,11 @@
 
   // STELLAMOVE
   #if AXIS_IS_TMC(X)
-    #define X_CURRENT       1050        // (mA) RMS current. Multiply by 1.414 for peak current.
+    #if ENABLED(STM_FA400_OLDSET)
+      #define X_CURRENT       800        // (mA) RMS current. Multiply by 1.414 for peak current.
+    #else
+      #define X_CURRENT       1050        // (mA) RMS current. Multiply by 1.414 for peak current.
+    #endif
     #define X_CURRENT_HOME  X_CURRENT  // (mA) RMS current for sensorless homing
     #define X_MICROSTEPS     32 // 16        // 0..256
     #define X_RSENSE          0.11
@@ -2890,7 +2897,11 @@
 
   // STELLAMOVE
   #if AXIS_IS_TMC(Y)
-    #define Y_CURRENT       1050        // (mA) RMS current. Multiply by 1.414 for peak current.
+    #if ENABLED(STM_FA400_OLDSET)
+      #define Y_CURRENT       800        // (mA) RMS current. Multiply by 1.414 for peak current.
+    #else
+      #define Y_CURRENT       1050        // (mA) RMS current. Multiply by 1.414 for peak current.
+    #endif
     #define Y_CURRENT_HOME  Y_CURRENT
     #define Y_MICROSTEPS     32  // 16
     #define Y_RSENSE          0.11
@@ -3012,7 +3023,11 @@
 
   // STELLAMOVE
   #if AXIS_IS_TMC(E0)
-    #define E0_CURRENT       1250        // (mA) RMS current. Multiply by 1.414 for peak current.
+    #if ENABLED(STM_FA400_OLDSET)
+      #define E0_CURRENT       500        // (mA) RMS current. Multiply by 1.414 for peak current.
+    #else
+      #define E0_CURRENT       1250        // (mA) RMS current. Multiply by 1.414 for peak current.
+    #endif
     #define E0_MICROSTEPS    16
     #define E0_RSENSE         0.11
     #define E0_CHAIN_POS     -1
@@ -3176,7 +3191,7 @@
    * Use Trinamic's ultra quiet stepping mode.
    * When disabled, Marlin will use spreadCycle stepping mode.
    */
-  #define STEALTHCHOP_XY
+  //#define STEALTHCHOP_XY
   #define STEALTHCHOP_Z
   #define STEALTHCHOP_I
   #define STEALTHCHOP_J

@@ -24,8 +24,9 @@
 /**
  * Release version. Leave the Marlin version or apply a custom scheme.
  */
+// STELLAMOVE
 #ifndef SHORT_BUILD_VERSION
-  #define SHORT_BUILD_VERSION "bugfix-2.1.x"
+  #define SHORT_BUILD_VERSION "FA400 V1.0.0"
 #endif
 
 /**
@@ -81,8 +82,9 @@
  * device. Override this if you provide public source code download. (GPLv3 requires
  * providing the source code to your customers.)
  */
+// STELLAMOVE
 #ifndef SOURCE_CODE_URL
-  #define SOURCE_CODE_URL "github.com/MarlinFirmware/Marlin"
+  #define SOURCE_CODE_URL "github.com/Stella3Dprint/Marlin4FA"
 #endif
 
 /**

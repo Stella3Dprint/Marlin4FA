@@ -258,8 +258,10 @@ void menu_pause_option() {
 
   #if HAS_FILAMENT_SENSOR
     const bool still_out = runout.filament_ran_out;
+    #ifndef STM_FA400    
     if (still_out)
       EDIT_ITEM(bool, MSG_RUNOUT_SENSOR, &runout.enabled, runout.reset);
+    #endif
   #else
     constexpr bool still_out = false;
   #endif

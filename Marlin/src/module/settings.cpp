@@ -1643,9 +1643,10 @@ void MarlinSettings::postprocess() {
         store_mesh(bedlevel.storage_slot);
     #endif
 
+    // STELLAMOVE
     if (!eeprom_error) {
       LCD_MESSAGE(MSG_SETTINGS_STORED);
-      TERN_(HOST_PROMPT_SUPPORT, hostui.notify(GET_TEXT_F(MSG_SETTINGS_STORED)));
+      TERN_(HOST_PROMPT_SUPPORT, hostui.notify(F("Settings stored")));
     }
 
     TERN_(EXTENSIBLE_UI, ExtUI::onSettingsStored(!eeprom_error));
@@ -2602,7 +2603,8 @@ void MarlinSettings::postprocess() {
         DEBUG_ECHO_START();
         DEBUG_ECHO(version);
         DEBUG_ECHOLNPGM(" stored settings retrieved (", eeprom_index - (EEPROM_OFFSET), " bytes; crc ", (uint32_t)working_crc, ")");
-        TERN_(HOST_EEPROM_CHITCHAT, hostui.notify(F("Stored settings retrieved")));
+        // STELLAMOVE
+        TERN_(HOST_EEPROM_CHITCHAT, hostui.notify(F("Settings loaded")));
       }
 
       if (!validating && !eeprom_error) postprocess();
@@ -3356,7 +3358,8 @@ void MarlinSettings::reset() {
   postprocess();
 
   #if EITHER(EEPROM_CHITCHAT, DEBUG_LEVELING_FEATURE)
-    FSTR_P const hdsl = F("Hardcoded Default Settings Loaded");
+    // STELLAMOVE
+    FSTR_P const hdsl = F("Defaults loaded");
     TERN_(HOST_EEPROM_CHITCHAT, hostui.notify(hdsl));
     DEBUG_ECHO_START(); DEBUG_ECHOLNF(hdsl);
   #endif

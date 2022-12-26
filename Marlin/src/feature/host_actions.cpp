@@ -199,8 +199,10 @@ void HostUI::action(FSTR_P const fstr, const bool eol) {
             #endif
             #if HAS_FILAMENT_SENSOR
               if (runout.filament_ran_out) {                      // Disable a triggered sensor
+#ifndef STM_FA400              // stellamove
                 runout.enabled = false;
                 runout.reset();
+#endif                
               }
             #endif
             break;

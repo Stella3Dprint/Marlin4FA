@@ -36,7 +36,7 @@
  * from where the binary was downloaded or the source code was compiled.
  */
 // STELLAMOVE
-#define DETAILED_BUILD_VERSION "STELLAMOVE FA400(based on Marlin 2.1.x)"
+#define DETAILED_BUILD_VERSION SHORT_BUILD_VERSION
 
 /**
  * The STRING_DISTRIBUTION_DATE represents when the binary file was built,
@@ -58,7 +58,7 @@
  * has a distinct Github fork— the Source Code URL should just be the main
  * Marlin repository.
  */
-//#define SOURCE_CODE_URL "github.com/MarlinFirmware/Marlin"
+//#define SOURCE_CODE_URL "github.com/Stella3Dprint/Marlin4FA"
 
 /**
  * Default generic printer UUID.

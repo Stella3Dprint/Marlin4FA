@@ -1023,7 +1023,7 @@
   #undef DISTINCT_E_FACTORS
   #define DISTINCT_AXES LOGICAL_AXES
   #if ENABLED(STM_FA400)
-    #define DISTINCT_E 8 // 1
+    #define DISTINCT_E 8
   #else
     #define DISTINCT_E 1
   #endif

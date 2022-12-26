@@ -652,6 +652,7 @@ void resume_print(const_float_t slow_load_length/*=0*/, const_float_t fast_load_
     "\n"
   );
   //*/
+
   if (!did_pause_print) return;
 
   // Re-enable the heaters if they timed out

@@ -154,12 +154,15 @@ void GcodeSuite::M600() {
     #endif
   );
 
+
   // STELLAMOVE
   if (pause_print(retract, park_point, true, unload_length DXC_PASS)) {
     if (standardM600) {
       #if ENABLED(STM_FA400_SINGLE_DD_MODE)
         // tool_change(active_extruder);
+        PITTA::b_stm_paused = true;
         PITTA::retract_ready();
+        PITTA::b_stm_paused = false;
         PITTA::b_retract_already = true;  
       #endif      
       

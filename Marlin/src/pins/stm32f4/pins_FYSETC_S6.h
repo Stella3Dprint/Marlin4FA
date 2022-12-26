@@ -68,7 +68,7 @@
 #define X_MAX_PIN                           PA1
 #define Y_MIN_PIN                           PB13
 #define Y_MAX_PIN                           PA2
-#define Z_MIN_PIN                           PA3 // PA0
+#define Z_MIN_PIN                           PA3 // PA0 - PROBE
 #define Z_MAX_PIN                           PA0 // PA3
 
 //
@@ -94,10 +94,20 @@
 #define Y_ENABLE_PIN                        PD9
 #define Y_CS_PIN                            PE15
 
-#define Z_STEP_PIN                          PD14
-#define Z_DIR_PIN                           PD13
-#define Z_ENABLE_PIN                        PD15
-#define Z_CS_PIN                            PD10
+#ifdef STM_3TO8_STEPPER_CHG
+  #define Z_STEP_PIN                          PE1 // stellamove change drive ic port 3->8
+  #define Z_DIR_PIN                           PE0 // stellamove change drive ic port 3->8 
+  #define Z_ENABLE_PIN                        PC5 // stellamove change drive ic port 3->8
+  #define Z_CS_PIN                            PD11// stellamove change drive ic port 3->8
+#else
+  #define Z_STEP_PIN                          PD14 // stellamove change drive ic port 3->8
+  #define Z_DIR_PIN                           PD13
+  #define Z_ENABLE_PIN                        PD15
+  #define Z_CS_PIN                            PD10
+#endif
+
+
+
 
 #define E0_STEP_PIN                         PD5
 #define E0_DIR_PIN                          PD6

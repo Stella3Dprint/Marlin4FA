@@ -57,8 +57,8 @@ public:
   static void load_material_from_retract_ready();
   static uint8_t pitta_state;
   static bool pitta_stop_req, pitta_enabled, b_retract_ready, b_retract_already, b_pitta_just_enabled, b_pitta_single_mode, b_sub_filament_s_runout;
-  static bool pitta_sel_req, b_pitta_loop_lock, b_e0_dir, b_init_pitta
-  ,b_slave_as_sensor, b_slave_as_invalid_sensor, b_init_pitta_initialized, b_material_detected_from_pitta,b_pitta_lock;
+  static bool pitta_sel_req, b_pitta_loop_lock, b_e0_dir, b_init_pitta, b_stm_paused,
+              b_slave_as_sensor, b_slave_as_invalid_sensor, b_init_pitta_initialized, b_material_detected_from_pitta,b_pitta_lock;
   static int send_M_byte_remain_num, e0_spd;
   static int change_turn_val;
 
